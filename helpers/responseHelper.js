@@ -1,4 +1,4 @@
-import RESPONSE_CODES from "../constants/responseCodes.js";
+import RESPONSE_CODES from '../constants/responseCodes.js';
 
 const sendResponse = (res, data, error) => {
   if (error) {

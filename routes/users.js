@@ -1,8 +1,9 @@
-import express from "express";
+import express from 'express';
+
+import { handleSignup } from '../controllers/users.js';
+
 const router = express.Router();
 
-import { handleSignup } from "../controllers/users.js";
-
-router.post("/", handleSignup);
+router.post('/', handleSignup);
 
 export default router;

@@ -1,6 +1,7 @@
-import { PrismaClient } from "@prisma/client";
+import { PrismaClient } from '@prisma/client';
+import sendResponse from '../helpers/responseHelper.js';
+
 const prisma = new PrismaClient();
-import sendResponse from "./../helpers/responseHelper.js";
 
 export const handleSignup = async (req, res) => {
   const { username, email, password } = req.body;

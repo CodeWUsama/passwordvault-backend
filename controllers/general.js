@@ -1,5 +1,5 @@
-import sendResponse from "../helpers/responseHelper.js";
-import RESPONSE_CODES from "../constants/responseCodes.js";
+import sendResponse from '../helpers/responseHelper.js';
+import RESPONSE_CODES from '../constants/responseCodes.js';
 
 export const getResponseCodes = (req, res) => {
   try {
