@@ -3,7 +3,7 @@
   "version": "0.0.0",
   "private": true,
   "scripts": {
-    "start": "nodemon ./bin/www"
+    "start": "nodemon ./bin/www.mjs"
   },
   "dependencies": {
     "@prisma/client": "^4.14.0",
@@ -15,5 +15,7 @@
   "devDependencies": {
     "nodemon": "^2.0.22",
     "prisma": "^4.14.0"
-  }
+  },
+  "type": "module",
+  "bin": "./bin/www.js"
 }
