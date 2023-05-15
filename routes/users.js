@@ -1,9 +1,11 @@
 import express from 'express';
 
-import { handleSignup } from '../controllers/users.js';
+import handleLogin from '../controllers/auth.js';
+import handleSignup from '../controllers/registration.js';
 
 const router = express.Router();
 
-router.post('/', handleSignup);
+router.post('/signup', handleSignup);
+router.post('/login', handleLogin);
 
 export default router;
