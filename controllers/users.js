@@ -1,20 +1,55 @@
 import { PrismaClient } from '@prisma/client';
+import jwt from 'jsonwebtoken';
+import RESPONSE_CODES from '../constants/responseCodes.js';
+import { compareData, encryptData } from '../helpers/encryptionHelpers.js';
 import sendResponse from '../helpers/responseHelper.js';
 
 const prisma = new PrismaClient();
 
 export const handleSignup = async (req, res) => {
-  const { username, email, password } = req.body;
+  const { fullname, email, password } = req.body;
+
   try {
-    await prisma.user.create({
-      data: {
-        username,
+    const user = await prisma.user.findUnique({
+      where: {
         email,
-        password,
       },
     });
-    sendResponse(res);
+    if (user) {
+      return sendResponse(res, null, 'User already exists');
+    }
+
+    const encryptedPassword = encryptData(password);
+    await prisma.user.create({
+      data: {
+        fullname,
+        email,
+        password: encryptedPassword,
+      },
+    });
+    return sendResponse(res);
   } catch (error) {
-    sendResponse(res, null, error.message);
+    return sendResponse(res, null, error.message);
+  }
+};
+
+export const handleLogin = async (req, res) => {
+  const { email, password } = req.body;
+  try {
+    const user = await prisma.user.findUnique({
+      where: {
+        email,
+      },
+    });
+    if (user) {
+      const isAuth = compareData(password, user.password);
+      if (isAuth) {
+        const token = jwt.sign({ email }, process.env.JWT_KEY);
+        return sendResponse(res, { auth_token: token });
+      }
+    }
+    return sendResponse(res, null, 'Invalid email/password', RESPONSE_CODES.authorizationError);
+  } catch (error) {
+    return sendResponse(res, null, error.message);
   }
 };
