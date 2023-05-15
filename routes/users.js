@@ -1,6 +1,7 @@
 import express from 'express';
 
-import { handleSignup, handleLogin } from '../controllers/users.js';
+import handleLogin from '../controllers/auth.js';
+import handleSignup from '../controllers/registration.js';
 
 const router = express.Router();
 
