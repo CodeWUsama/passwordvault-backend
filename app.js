@@ -7,6 +7,7 @@ import logger from 'morgan';
 import { fileURLToPath } from 'url';
 import cors from 'cors';
 import userRouter from './routes/users.js';
+import passwordRouter from './routes/passwords.js';
 import generalRouter from './routes/general.js';
 
 const filename = fileURLToPath(import.meta.url);
@@ -23,5 +24,7 @@ app.use(express.static(path.join(dirnameConst, 'public')));
 
 app.use('/', generalRouter);
 app.use('/user', userRouter);
+app.use('/user', userRouter);
+app.use('/passwords', passwordRouter);
 
 export default app;
