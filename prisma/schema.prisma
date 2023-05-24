@@ -8,10 +8,12 @@ datasource db {
 }
 
 model user {
-  id       String @id @default(uuid())
-  email    String @unique
-  fullname String
-  password String
+  id                String              @id @default(uuid())
+  email             String              @unique
+  fullname          String
+  password          String
+  CategoriesOnUsers CategoriesOnUsers[]
+  storedPasswords   password[]
 }
 
 model password {
@@ -22,10 +24,24 @@ model password {
   categoryId String
   createdAt  DateTime @default(now())
   updatedAt  DateTime @updatedAt
+  user       user     @relation(fields: [userId], references: [id])
+  userId     String
+
+  @@unique([userId, title, categoryId])
 }
 
 model category {
-  id       String     @id @default(uuid())
-  title    String
-  password password[]
+  id                String              @id @default(uuid())
+  title             String
+  password          password[]
+  CategoriesOnUsers CategoriesOnUsers[]
+}
+
+model CategoriesOnUsers {
+  user       user     @relation(fields: [userId], references: [id])
+  userId     String
+  category   category @relation(fields: [categoryId], references: [id])
+  categoryId String
+
+  @@id([userId, categoryId])
 }

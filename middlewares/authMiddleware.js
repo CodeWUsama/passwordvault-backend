@@ -9,7 +9,7 @@ const authenticateToken = (req, res, next) => {
 
   jwt.verify(token, process.env.JWT_KEY, (err, user) => {
     if (err) return sendResponse(res, {}, 'Unauthorized user', RESPONSE_CODES.authorizationError);
-    req.user = user;
+    req.userId = user.user;
 
     next();
   });

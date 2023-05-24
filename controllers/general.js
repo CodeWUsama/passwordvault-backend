@@ -5,7 +5,6 @@ export const getResponseCodes = (req, res) => {
   try {
     sendResponse(res, RESPONSE_CODES);
   } catch (error) {
-    console.log(error);
     sendResponse(res, null, error);
   }
 };

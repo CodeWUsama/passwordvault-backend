@@ -19,7 +19,7 @@ const handleLogin = async (req, res) => {
     if (user) {
       const isAuth = compareData(password, user.password);
       if (isAuth) {
-        const token = jwt.sign({ email }, process.env.JWT_KEY);
+        const token = jwt.sign({ user: user.id }, process.env.JWT_KEY);
         return sendResponse(res, { auth_token: token });
       }
     }
