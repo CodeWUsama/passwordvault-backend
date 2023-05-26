@@ -1,10 +1,11 @@
 import express from 'express';
-import { handleGetCategories, handlePostCategory } from '../controllers/categories.js';
+import { getAllCategories, createCategory } from '../controllers/categories.js';
+import tryCatchWrapper from '../helpers/tryCatchHelper.js';
 import authenticateToken from '../middlewares/authMiddleware.js';
 
 const router = express.Router();
 
-router.get('/', authenticateToken, handleGetCategories);
-router.post('/', authenticateToken, handlePostCategory);
+router.get('/', authenticateToken, tryCatchWrapper(getAllCategories));
+router.post('/', authenticateToken, tryCatchWrapper(createCategory));
 
 export default router;
