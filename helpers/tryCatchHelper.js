@@ -1,11 +1,11 @@
 import sendResponse from './responseHelper.js';
 
-const tryCatchWrapper = (executable) => async (...args) => {
+const tryCatchWrapper = (executable) => async (req, res, next) => {
   try {
-    const result = await executable(...args);
+    const result = await executable(req, res, next);
     return result;
   } catch (error) {
-    sendResponse(args.res, {}, error.message);
+    sendResponse(res, {}, error.message);
   }
 };
 
