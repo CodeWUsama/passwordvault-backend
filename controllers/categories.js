@@ -4,13 +4,6 @@ import sendResponse from '../helpers/responseHelper.js';
 const prisma = new PrismaClient();
 
 export const getAllCategories = async (req, res) => {
-  console.log(
-    await prisma.category.findMany({
-      include: {
-        CategoriesOnUsers: true,
-      },
-    })
-  );
   const categories = await prisma.category.findMany({
     where: {
       CategoriesOnUsers: {
