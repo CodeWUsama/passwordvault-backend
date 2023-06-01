@@ -4,6 +4,13 @@ import sendResponse from '../helpers/responseHelper.js';
 const prisma = new PrismaClient();
 
 export const getAllCategories = async (req, res) => {
+  console.log(
+    await prisma.category.findMany({
+      include: {
+        CategoriesOnUsers: true,
+      },
+    })
+  );
   const categories = await prisma.category.findMany({
     where: {
       CategoriesOnUsers: {
@@ -24,38 +31,37 @@ export const getAllCategories = async (req, res) => {
 
 export const createCategory = async (req, res) => {
   const { title } = req.body;
-  const categoryAlreadyExists = await prisma.category.findFirst({
+  const isUserPartOfCategory = await prisma.category.findFirst({
     where: {
       title: {
         equals: title,
         mode: 'insensitive',
       },
+      CategoriesOnUsers: {
+        some: {
+          userId: req.userId,
+        },
+      },
     },
   });
-  if (categoryAlreadyExists) {
-    const isUserPartOfCategory = await prisma.categoriesOnUsers.findFirst({
-      where: {
-        categoryId: categoryAlreadyExists.id,
-        userId: req.userId,
-      },
-    });
-    if (isUserPartOfCategory) {
-      return sendResponse(res, {}, 'Category already exists');
-    }
-    await prisma.categoriesOnUsers.create({
-      data: {
-        categoryId: categoryAlreadyExists.id,
-        userId: req.userId,
-      },
-    });
-    return sendResponse(res);
+  if (isUserPartOfCategory) {
+    return sendResponse(res, {}, 'Category already exists');
   }
-  await prisma.category.create({
+  await prisma.categoriesOnUsers.create({
     data: {
-      title,
-      CategoriesOnUsers: {
+      user: {
         connect: {
-          userId: req.userId,
+          id: req.userId,
+        },
+      },
+      category: {
+        connectOrCreate: {
+          where: {
+            title,
+          },
+          create: {
+            title,
+          },
         },
       },
     },

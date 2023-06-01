@@ -5,6 +5,7 @@ const tryCatchWrapper = (executable) => async (req, res, next) => {
     const result = await executable(req, res, next);
     return result;
   } catch (error) {
+    console.log(error);
     sendResponse(res, {}, error.message);
   }
 };
