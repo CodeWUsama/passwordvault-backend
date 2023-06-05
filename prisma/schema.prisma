@@ -32,7 +32,7 @@ model password {
 
 model category {
   id                String              @id @default(uuid())
-  title             String
+  title             String              @unique
   password          password[]
   CategoriesOnUsers CategoriesOnUsers[]
 }
@@ -44,4 +44,9 @@ model CategoriesOnUsers {
   categoryId String
 
   @@id([userId, categoryId])
+}
+
+model migration {
+  id    String @id @default(uuid())
+  title String @unique
 }

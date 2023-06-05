@@ -5,12 +5,18 @@ const prisma = new PrismaClient();
 
 export const getAllCategories = async (req, res) => {
   const categories = await prisma.category.findMany({
-    include: {
+    where: {
       CategoriesOnUsers: {
-        where: {
+        some: {
           userId: req.userId,
         },
       },
+    },
+    include: {
+      CategoriesOnUsers: true,
+    },
+    orderBy: {
+      title: 'asc',
     },
   });
   sendResponse(res, categories);
@@ -18,12 +24,37 @@ export const getAllCategories = async (req, res) => {
 
 export const createCategory = async (req, res) => {
   const { title } = req.body;
-  await prisma.category.create({
-    data: {
-      title,
+  const isUserPartOfCategory = await prisma.category.findFirst({
+    where: {
+      title: {
+        equals: title,
+        mode: 'insensitive',
+      },
       CategoriesOnUsers: {
-        create: {
+        some: {
           userId: req.userId,
+        },
+      },
+    },
+  });
+  if (isUserPartOfCategory) {
+    return sendResponse(res, {}, 'Category already exists');
+  }
+  await prisma.categoriesOnUsers.create({
+    data: {
+      user: {
+        connect: {
+          id: req.userId,
+        },
+      },
+      category: {
+        connectOrCreate: {
+          where: {
+            title,
+          },
+          create: {
+            title,
+          },
         },
       },
     },
