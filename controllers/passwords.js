@@ -43,5 +43,5 @@ export const handlePostPasswords = async (req, res) => {
       },
     },
   });
-  sendResponse(res, password.all.all);
+  sendResponse(res, password);
 };
