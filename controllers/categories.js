@@ -1,5 +1,8 @@
 import { PrismaClient } from '@prisma/client';
+import Cryptr from 'cryptr';
 import sendResponse from '../helpers/responseHelper.js';
+
+const cryptr = new Cryptr(process.env.JWT_KEY);
 
 const prisma = new PrismaClient();
 
@@ -65,4 +68,21 @@ export const createCategory = async (req, res) => {
     },
   });
   sendResponse(res, category);
+};
+
+export const getCategoryPasswords = async (req, res) => {
+  const categoryId = req.params.id;
+  const passwords = await prisma.category.findUnique({
+    where: {
+      id: categoryId,
+    },
+    select: {
+      password: true,
+    },
+  });
+  const updatedPasswords = passwords.password.map((pass) => ({
+    ...pass,
+    data: btoa(cryptr.decrypt(pass.data)),
+  }));
+  sendResponse(res, updatedPasswords);
 };
