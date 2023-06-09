@@ -12,9 +12,6 @@ export const getAllCategories = async (req, res) => {
         },
       },
     },
-    include: {
-      CategoriesOnUsers: true,
-    },
     orderBy: {
       title: 'asc',
     },
@@ -40,7 +37,7 @@ export const createCategory = async (req, res) => {
   if (isUserPartOfCategory) {
     return sendResponse(res, {}, 'Category already exists');
   }
-  await prisma.categoriesOnUsers.create({
+  const category = await prisma.categoriesOnUsers.create({
     data: {
       user: {
         connect: {
@@ -58,6 +55,14 @@ export const createCategory = async (req, res) => {
         },
       },
     },
+    select: {
+      category: {
+        select: {
+          id: true,
+          title: true,
+        },
+      },
+    },
   });
-  sendResponse(res);
+  sendResponse(res, category);
 };
