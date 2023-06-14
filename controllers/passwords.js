@@ -1,7 +1,7 @@
 import { PrismaClient } from '@prisma/client';
 import Cryptr from 'cryptr';
 import sendResponse from '../helpers/responseHelper.js';
-import createPasswordSchema from '../validationSchemas/passwordSchema.js';
+import { createPasswordSchema, updatePasswordSchema } from '../validationSchemas/passwordSchema.js';
 
 const cryptr = new Cryptr(process.env.JWT_KEY);
 
@@ -44,4 +44,21 @@ export const handlePostPasswords = async (req, res) => {
     },
   });
   sendResponse(res, password);
+};
+
+export const updatePassword = async (req, res) => {
+  const passId = req.params.id;
+  const { data } = req.body;
+  const encryptedData = cryptr.encrypt(data);
+  await updatePasswordSchema.validate({ ...req.body, id: passId });
+
+  await prisma.password.update({
+    where: {
+      id: passId,
+    },
+    data: {
+      data: encryptedData,
+    },
+  });
+  sendResponse(res);
 };
