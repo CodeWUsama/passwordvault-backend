@@ -62,3 +62,13 @@ export const updatePassword = async (req, res) => {
   });
   sendResponse(res);
 };
+
+export const deletePassword = async (req, res) => {
+  const passId = req.params.id;
+  await prisma.password.delete({
+    where: {
+      id: passId,
+    },
+  });
+  sendResponse(res);
+};
