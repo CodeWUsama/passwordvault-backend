@@ -77,7 +77,11 @@ export const getCategoryPasswords = async (req, res) => {
       id: categoryId,
     },
     select: {
-      password: true,
+      password: {
+        orderBy: {
+          createdAt: 'asc',
+        },
+      },
     },
   });
   const updatedPasswords = passwords.password.map((pass) => ({
